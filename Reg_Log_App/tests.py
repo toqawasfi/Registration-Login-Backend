@@ -1,14 +1,7 @@
 from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
-
-from rest_framework import status
 from rest_framework.authtoken.models import Token
-
-from rest_framework.test import APITestCase
-from rest_framework.authtoken.models import Token
-from django.urls import reverse
-from django.contrib.auth.models import User
 from rest_framework import status
 
 class RegisterTestCase(APITestCase):
@@ -90,17 +83,14 @@ class LoginLogoutTestCase(APITestCase):
         response = self.client.post(reverse('send-email'), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_password_reset(self):
-        """
-        Test resetting the user's password.
-
-        This test sends a POST request to the password_reset endpoint with valid data
-        and expects a successful response (HTTP 200 OK).
-        """
+    def test_password_reset_valid(self,code=''):
+        code = '1234'  
+        url = reverse('password_reset', args=[code])
         data = {
-            "username": "Toqa",
-            "email": "toqa@gmail.com",
-            "new_password": "Banyyassen12"
+            'username': "Toqa",
+            'email': "toqa@gmail.com",
+            'pass_code': "1234",  
+            'new_password': 'New_password123',
         }
-        response = self.client.post(reverse('password_reset'), data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    

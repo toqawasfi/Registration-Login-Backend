@@ -19,7 +19,7 @@ urlpatterns = [
     path('send-email', views.send_email, name='send-email'),
     
     # Reset the user's password
-    path('password_reset', views.password_reset, name='password_reset'),
+    path('password_reset/<str:code>', views.password_reset, name='password_reset'),
 ]
   
  

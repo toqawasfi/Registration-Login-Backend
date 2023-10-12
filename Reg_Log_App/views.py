@@ -7,6 +7,8 @@ from rest_framework.authtoken.models import Token
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+import random
+from datetime import datetime,timedelta
 
 
 
@@ -106,10 +108,15 @@ def send_email(request):
                 user = User.objects.get(username=username, email=email)
             except User.DoesNotExist:
                 return Response({'message': 'User does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+            random_number = str(random.randint(1000, 9999))
+            request.session['verification_code'] = random_number
+            
 
-            reset_link = "http://localhost:3000/password_reset"
+
+            reset_link = f"http://localhost:3000/password_reset?code={random_number}&time={datetime.now().isoformat()}Z"
             subject = 'Password Reset Request'
-            message = f'Hello {username}, please click the link below to reset your password:\n\n{reset_link}'
+            message = f'Hello {username}, your verification code is: {random_number}\n\n' \
+                      f'Please click the link below to reset your password:\n\n{reset_link}' 
             from_email = 'toqatask@gmail.com'  
             recipient_list = [email]
             send_mail(subject, message, from_email, recipient_list, fail_silently=False)
@@ -120,7 +127,7 @@ def send_email(request):
 
 
 @api_view(['POST'])
-def password_reset(request):
+def password_reset(request,code):
     """
     Reset the user's password.
 
@@ -139,10 +146,25 @@ def password_reset(request):
     if request.method == 'POST':
         username = request.data.get('username')
         email = request.data.get('email')
+        verification_code = code
+        pass_code=request.data.get('pass_code')
+        print(pass_code)
+        print(code)
+
+        
         try:
             user = User.objects.get(username=username, email=email)
         except User.DoesNotExist:
             return Response({'message': 'User does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+
+       
+
+        if verification_code != code: 
+                    return Response({'message': 'Invalid verification code.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if pass_code != code:
+                    return Response({'message': 'Invalid verification code.'}, status=status.HTTP_400_BAD_REQUEST)
+
 
         new_password = request.data.get('new_password')
         if len(new_password) < 8 or not any(c.isupper() for c in new_password):

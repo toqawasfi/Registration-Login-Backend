@@ -51,12 +51,7 @@ config_file_path = os.path.join(BASE_DIR, 'config.json')
 with open(config_file_path, 'r') as config_file:
     config_data = json.load(config_file)
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = config_data.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = config_data.get('EMAIL_HOST_PASSWORD ', '')
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -99,6 +94,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 
 # Password validation
@@ -141,10 +137,10 @@ EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'postmaster@sandbox1731554d444d4883a67c5468bdd542e2.mailgun.org'
-EMAIL_HOST_PASSWORD = '6bbe41859a3fa7145bebcc6714af8860-77316142-5cabc58c'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 DEFAULT_FROM_EMAIL = 'toqatask@gmail.com'  # Replace with your sender email address
-
+SERVER_EMAIL = 'toqatask@gmail.com'
 
 
 # Default primary key field type
